@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html ng-app="plunker">
+<html ng-app="techolution">
 
 <head>
   <meta charset="utf-8" />
@@ -9,27 +9,26 @@
   </script>
   <link rel="stylesheet" href="style.css" />
   <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet" />
-  <link href="../app-content/app.css" rel="stylesheet" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
   <script data-require="angular.js@1.4.x" src="https://code.angularjs.org/1.4.9/angular.js" data-semver="1.4.9"></script>
-  <script src="../app.js"></script>
+  <script src="app.js"></script>
 </head>
 
 <body ng-controller="MainCtrl">
 <div align="center">
-  <select ng-model="selectedCity"  ng-change="extractSubsities(selectedCity)" ng-options="item as item.name for item in cities track by item.name">
+  <select ng-model="selectedMake"  ng-change="extractSubmodules(selectedCity)" ng-options="item as item.name for item in makes track by item.name">
   </select>
   &nbsp;&ensp;&nbsp;&ensp;
-  <select  ng-model="selectedSubCity"  ng-change="extractSubsities(selectedSubCity)" ng-options="item2 as item2.name for item2 in selectedCity.subsities track by item2.name">
-  </select>app.js
-  index.html
+  <select  ng-model="selectedSubModule"  ng-change="extractSubmodules(selectedSubModule)" ng-options="item2 as item2.name for item2 in selectedMake.submodules track by item2.name">
+  </select>
   <br>
   <br>
 </div>
 <table align="center">
   <tr ng-repeat="item3 in data track by item3.id">
-    <!--but here I need to iterat the selectedSubCity too when I select DropDown 2-->
+    <!--but here I need to iterate the selectedSubModule too when I select DropDown 2-->
     <td><pre> Selected car : {{ item3.name }}  </pre></td>
   </tr>
 

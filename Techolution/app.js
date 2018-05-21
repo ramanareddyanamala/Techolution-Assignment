@@ -1,41 +1,50 @@
 var express = require('express');
+var path = require('path');
+var logger = require('morgan');
+var cookieParser = require('cookie-parser');
+var bodyParser = require('body-parser');
+var cors=require('cors');
 
-var mongo = require('mongoskin');
-var db = mongo.db('mongodb://localhost:27017/angular', { native_parser: true });
-db.bind('cars');
+var Lang = require('./routes/Lang');
 var app = express();
 
-var expressPort = 8080;
-/*
-    MongoPort = 27017,
-    MongoIP = 'localhost',
-    dbname = 'angulars',
-    collectionName = 'devices';
-*/
+app.set('views', path.join(__dirname, 'views'));
 
-app.use('/image',express.static(__dirname+'/public'));
 app.set('view engine', 'jade');
-app.set('json spaces', 2);
+app.use(cors());
+app.use(logger('dev'));
+app.use(bodyParser.json({limit: '50mb'}));
+app.use(bodyParser.urlencoded({limit: '50mb', extended: false }));
+app.use(cookieParser());
 
-app.listen(expressPort, function () {
-    console.log('server listening on port ' + expressPort);
+app.use('/image',express.static(path.join(__dirname, '/public')));
+app.use('/angular',express.static(path.join(__dirname,'/views')));
+
+
+app.use('/spectrum/lang',Lang);
+app.use(function(req, res, next) {
+    var err = new Error('Not Found');
+    err.status = 404;
+    next(err);
 });
 
-//var db = new Db(dbname, new Server(MongoIP, MongoPort), { safe: false });
-app.get('/getData', function (req, res) {
-    db.cars.findOne({make:'Ford'},function (ec,dc) {
-        if(ec){
-            console.log(ec);
-        }else{
-            console.log(dc);
-            res.setHeader('Content-Type', 'application/json');
-            res.json(dc);
-            //res.json(dc).toString().pretty;
-            //res.send({ "records":[ {"Name":"Alfreds Futterkiste","City":"Berlin","Country":"Germany"}, {"Name":"Ana Trujillo Emparedados y helados","City":"México D.F.","Country":"Mexico"}, {"Name":"Antonio Moreno Taquería","City":"México D.F.","Country":"Mexico"}, {"Name":"Around the Horn","City":"London","Country":"UK"}, {"Name":"B's Beverages","City":"London","Country":"UK"}, {"Name":"Berglunds snabbköp","City":"Luleå","Country":"Sweden"}, {"Name":"Blauer See Delikatessen","City":"Mannheim","Country":"Germany"}, {"Name":"Blondel père et fils","City":"Strasbourg","Country":"France"}, {"Name":"Bólido Comidas preparadas","City":"Madrid","Country":"Spain"}, {"Name":"Bon app'","City":"Marseille","Country":"France"}, {"Name":"Bottom-Dollar Marketse","City":"Tsawassen","Country":"Canada"}, {"Name":"Cactus Comidas para llevar","City":"Buenos Aires","Country":"Argentina"}, {"Name":"Centro comercial Moctezuma","City":"México D.F.","Country":"Mexico"}, {"Name":"Chop-suey Chinese","City":"Bern","Country":"Switzerland"}, {"Name":"Comércio Mineiro","City":"São Paulo","Country":"Brazil"} ] });
-        }
-    })
+
+if (app.get('env') === 'development') {
+    app.use(function(err, req, res, next) {
+        res.status(err.status || 500);
+        res.render('error', {
+            message: err.message,
+            error: err
+        });
+    });
+}
+
+app.use(function(err, req, res, next) {
+    res.status(err.status || 500);
+    res.render('error', {
+        message: err.message,
+        error: {}
+    });
 });
 
-app.get('/',function (req,res) {
-    res.sendFile(__dirname+'/index.html');
-})
+module.exports = app;
