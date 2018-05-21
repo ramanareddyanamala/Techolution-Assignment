@@ -22,7 +22,7 @@ app.controller('MainCtrl', function($scope, $http) {
                             name: jsonData.name1,
                             elements: [{
                                 name: jsonData.name1,
-                                model: 2017,
+                               
                                 url : jsonData.url1
                             }]
 
