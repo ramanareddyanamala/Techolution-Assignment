@@ -1,0 +1,4 @@
+﻿{
+    "connectionString": "mongodb://localhost:27017/angular",
+    "apiUrl": "http://localhost:8080/"
+}
